@@ -37,11 +37,11 @@ namespace Medvedev
 
             char[] textArray = Content.ToCharArray();
 
-            CountVowelsAndConsonants(textArray);
+            LetterCheck(textArray);
 
         }
 
-        static void CountVowelsAndConsonants(char[] text)
+        static void LetterCheck(char[] text)
         {
             char[] ruVowels = { 'а', 'е', 'ё', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я' };
             char[] ruConsonants = { 'б', 'в', 'г', 'д', 'ж', 'з', 'й', 'к', 'л', 'м', 'н', 'п', 'р', 'с', 'т', 'ф', 'х', 'ц', 'ч', 'ш', 'щ' };
