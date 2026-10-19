@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Medvedev
 {
@@ -35,19 +36,20 @@ namespace Medvedev
                 Console.WriteLine();
             }
 
-            char[] textArray = Content.ToCharArray();
+            List<char> textArray = new List<char>(Content);
+           
 
             LetterCheck(textArray);
 
         }
 
-        static void LetterCheck(char[] text)
+        static void LetterCheck(List<char> text)
         {
-            char[] ruVowels = { 'а', 'е', 'ё', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я' };
-            char[] ruConsonants = { 'б', 'в', 'г', 'д', 'ж', 'з', 'й', 'к', 'л', 'м', 'н', 'п', 'р', 'с', 'т', 'ф', 'х', 'ц', 'ч', 'ш', 'щ' };
+            List<char> ruConsonants = new List<char>() { 'б', 'в', 'г', 'д', 'ж', 'з', 'й', 'к', 'л', 'м', 'н', 'п', 'р', 'с', 'т', 'ф', 'х', 'ц', 'ч', 'ш', 'щ' };
+            List<char> ruVowels = new List<char>() { 'а', 'е', 'ё', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я' };
 
-            char[] enVowels = { 'a', 'e', 'i', 'o', 'u', 'y' };
-            char[] enConsonants = { 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z' };
+            List<char> enVowels = new List<char>() { 'a', 'e', 'i', 'o', 'u', 'y' };
+            List<char> enConsonants = new List<char>() { 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z' };
 
             // Счетчики для русского языка
             int ruVowelsCount = 0;
@@ -57,7 +59,7 @@ namespace Medvedev
             int enVowelsCount = 0;
             int enConsonantsCount = 0;
 
-            for (int i = 0; i < text.Length; i++)
+            for (int i = 0; i < text.Count; i++)
             {
                 // Приводим текущий символ к нижнему регистру 
                 char lowerChar = char.ToLower(text[i]);
