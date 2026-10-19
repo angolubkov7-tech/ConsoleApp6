@@ -55,7 +55,6 @@ namespace Medvedev
 
             foreach(var pair in weatherDict)
             {
-                string montName = pair.Key;
                 int[] daysArry = pair.Value;
 
                 double sum = 0;
