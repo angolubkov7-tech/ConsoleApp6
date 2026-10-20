@@ -1,56 +1,57 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
+using System.Net.Http;
+using System.IO;
+using System.Threading.Channels;
+
 
 namespace Medvedev
 {
-    class Programm
+    class Program
     {
-        static void Main(string[] args)
+        public static readonly HttpClient http = new HttpClient();
+        public static readonly Random rnd = new Random();
+
+        static async Task Main(string[] args)
         {
-            Console.Write("Ввидите номер задачи: ");
-            int i = int.Parse(Console.ReadLine());
-
-            
-            List<int> image = new List<int>(64);
-
-            foreach(var emply in image)
+            var image = new List<int >(64);
+            for (int i = 1; i <= 32; i++)
             {
-                image[emply] = emply+1; 
+                image.Add(i);   
+                image.Add(i);   
             }
 
-            Console.WriteLine("До перетасовки");
-            foreach (var emplee in image)
-            {
-                Console.WriteLine(image[emplee]);
-            }
+            Console.WriteLine("Всего элементов: " + image.Count);   
 
-            shuffling(image);
+            Console.WriteLine("До перетасовки:");
+            PrintList(image);
 
-            Console.WriteLine("После перетасовки");
-            foreach (var emple in image)
-            {
-                Console.WriteLine(image[emple]);
-            }
+            Shuffle(image);
 
+            Console.WriteLine("После перетасовки:");
+            PrintList(image);
         }
-        
-        public static void shuffling(List<int> im)
-        {
-            Random rnd = new Random();
 
+        
+        public static void PrintList(List<int> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                Console.Write(list[i] + " ");
+            }
+            Console.WriteLine();
+        }
+
+        
+        public static void Shuffle(List<int> im)
+        {
             for (int i = 0; i < im.Count; i++)
             {
                 int j = rnd.Next(i + 1);
                 int temp = im[i];
                 im[i] = im[j];
-
                 im[j] = temp;
             }
         }
-
-
     }
 }
