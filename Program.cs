@@ -9,10 +9,9 @@ namespace Medvedev
 {
     class Program
     {
-        public static readonly HttpClient http = new HttpClient();
         public static readonly Random rnd = new Random();
 
-        static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
             var image = new List<int >(64);
             for (int i = 1; i <= 32; i++)
