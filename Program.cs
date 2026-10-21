@@ -30,7 +30,7 @@ namespace Medvedev
             get { return Surname + " " + Name; } //читает что нужно вернуть когда кто то использует FullName
         }
 
-        public override string ToString()
+        public override string ToString()//когда перебераем обьект .NET сам его вызвает и печатет то что вернул, (override) создал свой метод вместо базового для печати студентов
         {
             return FullName + "|" + YearBirth + "год рождения | экзамен" + Exam + "| баллы" + Points;
         }
@@ -42,36 +42,39 @@ namespace Medvedev
         {
             Group group = new Group();
 
-
-            Console.WriteLine("=== Меню ===");
-            Console.WriteLine("  Новый студент");
-            Console.WriteLine("  Удалить");
-            Console.WriteLine("  Сортировать");
-            Console.Write("Введите команду: ");
-
-            string input = Console.ReadLine();
-
-            if (input == "Новый студент")
+            while (true)
             {
-                group.Add();
-            }
+                Console.WriteLine("=== Меню ===");
+                Console.WriteLine("  Новый студент");
+                Console.WriteLine("  Удалить");
+                Console.WriteLine("  Сортировать");
+                Console.Write("Введите команду: ");
+                string input = Console.ReadLine();
 
-            else if (input == "Удалить")
-            {
-                group.Remove();
+                if (input == "выход") { break; }
+
+                else if (input == "Новый студент")
+                {
+                    group.Add();
+                }
+
+                else if (input == "Удалить")
+                {
+                    group.Remove();
+                }
+                else if (input == "Сортировать")
+                {
+                    group.Sort();
+                }
+                else { Console.WriteLine("Команда введена неверно"); }
             }
-            else if (input == "Сортировать")
-            {
-                group.Sort();
-            }
-            else { Console.WriteLine("Команда введена не верно"); }
         }
     }
 
     class Group
     {
 
-        private Dictionary<string, Student> students = new Dictionary<string, Student>();
+        private Dictionary<string, Student> students = new Dictionary<string, Student>(); //чтобы было видно внутри своего класса
         private const string FillePatch = "student.txt";
 
         public void LoadFromFille() //без static т.к нужна было бы ссылка на обьект
@@ -165,7 +168,7 @@ namespace Medvedev
 
             for (int i = 0; i < sotred.Count; i++)
             {
-                Console.WriteLine(sotred[i]);
+                Console.WriteLine(sotred[i]); // сам вызывает ToString()
             }
         }
 
