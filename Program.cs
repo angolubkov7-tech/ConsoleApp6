@@ -7,8 +7,8 @@ namespace Medvedev
     {
         public string Name;
         public int Age;
-        public Dictionary<string, string> IllnessMedication; //болезнь лекарство
-        public Hospital CurrentHospital; //null если не в больнице, текущая больница
+        public Dictionary<string, string> IllnessMedication; // болезнь → лекарство
+        public Hospital CurrentHospital;                     // null, если не в больнице
 
         public Grandma(string name, int age)
         {
@@ -24,7 +24,7 @@ namespace Medvedev
             IllnessMedication[illness] = medication;
         }
 
-        public int IllnessCount //количество болезней берутся из количества словаря
+        public int IllnessCount
         {
             get { return IllnessMedication.Count; }
         }
@@ -32,13 +32,14 @@ namespace Medvedev
         public string IllnessesToString()
         {
             if (IllnessCount == 0) return "нет";
+
             string result = "";
             bool first = true;
 
             foreach (KeyValuePair<string, string> pair in IllnessMedication)
             {
                 if (!first) result += ", ";
-                result += pair.Key + "(лекарство: " + pair.Value + ')';
+                result += pair.Key + " (лекарство: " + pair.Value + ")";
                 first = false;
             }
             return result;
@@ -50,15 +51,15 @@ namespace Medvedev
         public string Name;
         public List<string> TreatedIllnesses;
         public int Capacity;
-        public List<Grandma> Patient;
+        public List<Grandma> Patients;                       // ← было Patient
 
-        public Hospital(string name, int capcity)
+        public Hospital(string name, int capacity)           // ← опечатка capcity исправлена
         {
             Name = name;
-            Capacity = capcity;
+            Capacity = capacity;
 
             TreatedIllnesses = new List<string>();
-            Patient = new List<Grandma>();
+            Patients = new List<Grandma>();
         }
 
         public void AddTreatedIllness(string illness)
@@ -68,33 +69,33 @@ namespace Medvedev
 
         public bool HasFreeSpace
         {
-            get { return Patient.Count < Capacity; }
+            get { return Patients.Count < Capacity; }
         }
 
-        public double FillPercent //на сколько процентов больница заполнена 
+        public double FillPercent
         {
             get
             {
                 if (Capacity == 0) return 0;
-                return (double)Patient.Count / Capacity * 100;
+                return (double)Patients.Count / Capacity * 100;
             }
         }
 
-        public double TreatPercent(Grandma g) // сколько болезней больница лечит у бабки в процентах
+        public double TreatPercent(Grandma g)
         {
-            if (g.IllnessCount == 0) return 100; //пойдет любая бабка
+            if (g.IllnessCount == 0) return 100;
 
-            int k = 0;
+            int matched = 0;
             foreach (string illness in g.IllnessMedication.Keys)
             {
-                if (TreatedIllnesses.Contains(illness)) k++;
+                if (TreatedIllnesses.Contains(illness)) matched++;
             }
-            return (double)k / g.IllnessCount * 100; //сравниваем болезни бабки с болезнми больницы и если совпало то добавляем 1, делим на количество болезней бабки
+            return (double)matched / g.IllnessCount * 100;
         }
 
         public void Admit(Grandma g)
         {
-            Patient.Add(g);
+            Patients.Add(g);
             g.CurrentHospital = this;
         }
     }
@@ -103,8 +104,8 @@ namespace Medvedev
     {
         static Stack<Hospital> hospitals = new Stack<Hospital>();
         static Queue<Grandma> waitingGrandmas = new Queue<Grandma>();
-        static List<Grandma> allGrandmas = new List<Grandma>(); //для вывода
-        static List<Grandma> streetGrandmas = new List<Grandma>(); //кто остался на улице
+        static List<Grandma> allGrandmas = new List<Grandma>();     // для вывода
+        static List<Grandma> streetGrandmas = new List<Grandma>();  // кто остался на улице
 
         static void Main()
         {
@@ -118,14 +119,16 @@ namespace Medvedev
                 Console.WriteLine("1. Добавить бабулю (ввод с клавиатуры)");
                 Console.WriteLine("2. Распределить очередь по больницам");
                 Console.WriteLine("3. Показать всех бабуль и больницы");
-                Console.WriteLine("4. Добавить демо-бабуль (для быстрой проверки)");
                 Console.WriteLine("0. Выход");
                 Console.Write("Выбор: ");
 
+                
                 string input = Console.ReadLine();
+                if (input == "Выход") break;
+
                 if (input == null) input = "";
                 input = input.Trim();
-
+                
                 if (input == "1") AddGrandma();
                 else if (input == "2") ProcessQueue();
                 else if (input == "3") ShowAll();
@@ -134,6 +137,7 @@ namespace Medvedev
             }
         }
 
+        // ---------- БОЛЬНИЦЫ (стек) ----------
         static void InitHospitals()
         {
             Hospital h1 = new Hospital("Городская", 3);
@@ -159,37 +163,45 @@ namespace Medvedev
             hospitals.Push(h4);
         }
 
+        // ---------- ВВОД БАБУЛИ ----------
         static void AddGrandma()
         {
             Console.Write("Имя бабули: ");
             string name = Console.ReadLine();
-
+            if (name == null) name = "";
 
             Console.Write("Возраст: ");
-            int age = int.Parse(Console.ReadLine());
+            int age;
+            while (!int.TryParse(Console.ReadLine(), out age))
+                Console.Write("Некорректно, повторите: ");
 
             Grandma g = new Grandma(name, age);
 
             Console.Write("Сколько болезней у бабули: ");
-            int n = int.Parse(Console.ReadLine());
+            int n;
+            while (!int.TryParse(Console.ReadLine(), out n) || n < 0)
+                Console.Write("Некорректно, повторите: ");
 
             for (int i = 0; i < n; i++)
             {
                 Console.Write($"Болезнь № {i + 1}: ");
                 string illness = Console.ReadLine();
+                if (illness == null) illness = "";
 
-                Console.Write($"Какое лекарство пьете от {illness}: ");
+                Console.Write($"Какое лекарство пьёт от {illness}: ");
                 string med = Console.ReadLine();
+                if (med == null) med = "";
 
                 g.AddIllness(illness, med);
             }
 
-            waitingGrandmas.Enqueue(g); //в очереди
+            waitingGrandmas.Enqueue(g);   // в очередь (FIFO)
             allGrandmas.Add(g);
 
-            Console.WriteLine($"Бабуля {name} встала в очредь (в очереди: {waitingGrandmas.Count})");
+            Console.WriteLine($"Бабуля {name} встала в очередь (в очереди: {waitingGrandmas.Count})");
         }
 
+        // ---------- РАСПРЕДЕЛЕНИЕ ОЧЕРЕДИ ----------
         static void ProcessQueue()
         {
             if (waitingGrandmas.Count == 0)
@@ -200,61 +212,61 @@ namespace Medvedev
 
             while (waitingGrandmas.Count > 0)
             {
-                Grandma g = waitingGrandmas.Dequeue();   // FIFO — по порядку прихода
+                Grandma g = waitingGrandmas.Dequeue();
                 Hospital target = FindHospital(g);
 
                 if (target != null)
                 {
                     target.Admit(g);
-                    Console.WriteLine("Бабуля " + g.Name + " → больница \"" + target.Name + "\"");
+                    Console.WriteLine($"Бабуля {g.Name} → больница \"{target.Name}\"");
                 }
                 else
                 {
                     streetGrandmas.Add(g);
                     if (g.IllnessCount == 0)
-                        Console.WriteLine("Бабуля " + g.Name + " не смогла попасть даже спросить — все больницы полны.");
+                        Console.WriteLine($"Бабуля {g.Name} не смогла попасть даже спросить — все больницы полны.");
                     else
-                        Console.WriteLine("Бабуля " + g.Name + " осталась на улице плакать 😭");
+                        Console.WriteLine($"Бабуля {g.Name} осталась на улице плакать 😭");
                 }
             }
-
-
         }
 
+        // ---------- ПОИСК ПОДХОДЯЩЕЙ БОЛЬНИЦЫ (стек: сверху вниз) ----------
         static Hospital FindHospital(Grandma g)
         {
-            foreach (Hospital h in hospitals)   // стек: сверху вниз
+            foreach (Hospital h in hospitals)
             {
                 if (!h.HasFreeSpace) continue;
 
-                // Бабуля без болезней — первая свободная
+                // без болезней — первая свободная
                 if (g.IllnessCount == 0) return h;
 
-                // Есть болезни — нужно строго больше 50%
+                // есть болезни — строго > 50%
                 if (h.TreatPercent(g) > 50) return h;
             }
-            return null;   // ни одна не подошла
+            return null;
         }
 
+        // ---------- ВЫВОД ----------
         static void ShowAll()
         {
             Console.WriteLine();
-            Console.WriteLine("========== БАБУЛИ (" + allGrandmas.Count + ") ==========");
+            Console.WriteLine($"========== БАБУЛИ ({allGrandmas.Count}) ==========");
             if (allGrandmas.Count == 0) Console.WriteLine("(пока никого)");
 
             for (int i = 0; i < allGrandmas.Count; i++)
             {
                 Grandma g = allGrandmas[i];
-                Console.WriteLine((i + 1) + ". " + g.Name + ", " + g.Age + " лет");
-                Console.WriteLine("   Болезни: " + g.IllnessesToString());
+                Console.WriteLine($"{i + 1}. {g.Name}, {g.Age} лет");
+                Console.WriteLine($"   Болезни: {g.IllnessesToString()}");
 
                 if (g.CurrentHospital != null)
                 {
                     if (g.IllnessCount == 0)
-                        Console.WriteLine("   Статус: больница \"" + g.CurrentHospital.Name + "\" (спрашивает)");
+                        Console.WriteLine($"   Статус: больница \"{g.CurrentHospital.Name}\" (спрашивает)");
                     else
-                        Console.WriteLine("   Статус: больница \"" + g.CurrentHospital.Name
-                            + "\" (лечит " + g.CurrentHospital.TreatPercent(g).ToString("F1") + "% её болезней)");
+                        Console.WriteLine($"   Статус: больница \"{g.CurrentHospital.Name}\" " +
+                                          $"(лечит {g.CurrentHospital.TreatPercent(g):F1}% её болезней)");
                 }
                 else if (streetGrandmas.Contains(g))
                 {
@@ -270,14 +282,17 @@ namespace Medvedev
             }
 
             Console.WriteLine();
-            Console.WriteLine("========== БОЛЬНИЦЫ (" + hospitals.Count + ") ==========");
+            Console.WriteLine($"========== БОЛЬНИЦЫ ({hospitals.Count}) ==========");
             Console.WriteLine("(стек, сверху вниз)");
+
             int index = 1;
             foreach (Hospital h in hospitals)
             {
-                Console.WriteLine(index + ". Больница \"" + h.Name + "\"");
+                Console.WriteLine($"{index}. Больница \"{h.Name}\"");
+
                 Console.Write("   Лечит: ");
-                if (h.TreatedIllnesses.Count == 0) Console.Write("(ничего)");
+                if (h.TreatedIllnesses.Count == 0)
+                    Console.Write("(ничего)");
                 else
                 {
                     for (int i = 0; i < h.TreatedIllnesses.Count; i++)
@@ -287,27 +302,27 @@ namespace Medvedev
                     }
                 }
                 Console.WriteLine();
-                Console.WriteLine("   Заполненность: " + h.Patients.Count + "/" + h.Capacity
-                    + " (" + h.FillPercent.ToString("F1") + "%)");
 
-                if (h.Patient.Count > 0)
+                Console.WriteLine($"   Заполненность: {h.Patients.Count}/{h.Capacity} " +
+                                  $"({h.FillPercent:F1}%)");
+
+                if (h.Patients.Count > 0)
                 {
                     Console.Write("   Пациенты: ");
-                    for (int i = 0; i < h.Patient.Count; i++)
+                    for (int i = 0; i < h.Patients.Count; i++)
                     {
                         if (i > 0) Console.Write(", ");
-                        Console.Write(h.Patient[i].Name);
+                        Console.Write(h.Patients[i].Name);
                     }
                     Console.WriteLine();
                 }
+
                 index++;
             }
 
             Console.WriteLine();
-            Console.WriteLine("В очереди ждут: " + waitingGrandmas.Count);
-            Console.WriteLine("На улице: " + streetGrandmas.Count);
-
-
+            Console.WriteLine($"В очереди ждут: {waitingGrandmas.Count}");
+            Console.WriteLine($"На улице: {streetGrandmas.Count}");
         }
     }
 }
