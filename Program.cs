@@ -51,9 +51,9 @@ namespace Medvedev
         public string Name;
         public List<string> TreatedIllnesses;
         public int Capacity;
-        public List<Grandma> Patients;                       // ← было Patient
+        public List<Grandma> Patients;                       
 
-        public Hospital(string name, int capacity)           // ← опечатка capcity исправлена
+        public Hospital(string name, int capacity)           
         {
             Name = name;
             Capacity = capacity;
@@ -171,16 +171,13 @@ namespace Medvedev
             if (name == null) name = "";
 
             Console.Write("Возраст: ");
-            int age;
-            while (!int.TryParse(Console.ReadLine(), out age))
-                Console.Write("Некорректно, повторите: ");
+            int age = int.Parse(Console.ReadLine());
+            
 
             Grandma g = new Grandma(name, age);
 
             Console.Write("Сколько болезней у бабули: ");
-            int n;
-            while (!int.TryParse(Console.ReadLine(), out n) || n < 0)
-                Console.Write("Некорректно, повторите: ");
+            int n = int.Parse(Console.ReadLine());
 
             for (int i = 0; i < n; i++)
             {
