@@ -268,7 +268,7 @@ namespace Medvedev
                 else if (streetGrandmas.Contains(g))
                 {
                     if (g.IllnessCount > 0)
-                        Console.WriteLine("   Статус: 😭 на улице плачет");
+                        Console.WriteLine("   Статус: на улице плачет");
                     else
                         Console.WriteLine("   Статус: на улице (все больницы полны)");
                 }
