@@ -223,7 +223,7 @@ namespace Medvedev
                     if (g.IllnessCount == 0)
                         Console.WriteLine($"Бабуля {g.Name} не смогла попасть даже спросить — все больницы полны.");
                     else
-                        Console.WriteLine($"Бабуля {g.Name} осталась на улице плакать 😭");
+                        Console.WriteLine($"Бабуля {g.Name} осталась на улице плакать ");
                 }
             }
         }
